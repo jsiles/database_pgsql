@@ -12,7 +12,7 @@ exports.crearPedido = async (req, res) => {
 // Obtener todos los pedidos (con información del cliente)
 exports.obtenerPedidos = async (req, res) => {
     try {
-        const pedidos = await Pedido.find().populate('clienteId');
+        const pedidos = await Pedido.findAll();
         res.json(pedidos);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -21,7 +21,7 @@ exports.obtenerPedidos = async (req, res) => {
 // Obtener un pedido por id
 exports.obtenerPedidoPorId = async (req, res) => {
     try {
-        const pedido = await Pedido.findById(req.params.id).populate('clienteId');
+        const pedido = await Pedido.findByPk(req.params.id);
         if (!pedido) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
@@ -33,10 +33,11 @@ exports.obtenerPedidoPorId = async (req, res) => {
 // Actualizar un pedido
 exports.actualizarPedido = async (req, res) => {
     try {
-        const pedidoActualizado = await Pedido.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const pedidoActualizado = await Pedido.findByPk(req.params.id);
         if (!pedidoActualizado) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
+        await pedidoActualizado.update(req.body);
         res.json(pedidoActualizado);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -45,10 +46,11 @@ exports.actualizarPedido = async (req, res) => {
 // Eliminar un pedido
 exports.eliminarPedido = async (req, res) => {
     try {
-        const pedidoEliminado = await Pedido.findByIdAndDelete(req.params.id);
+        const pedidoEliminado = await Pedido.findByPk(req.params.id);
         if (!pedidoEliminado) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
         }
+        await pedidoEliminado.destroy();
         res.json({ message: 'Pedido eliminado' });
     } catch (error) {
         res.status(500).json({ error: error.message });

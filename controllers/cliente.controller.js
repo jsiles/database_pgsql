@@ -11,7 +11,7 @@ exports.crearCliente = async (req, res) => {
 // Obtener un cliente por id
 exports.obtenerClientePorId = async (req, res) => {
     try {
-        const cliente = await Cliente.findById(req.params.id);
+        const cliente = await Cliente.findByPk(req.params.id);
         if (!cliente) {
             return res.status(404).json({ message: 'Cliente no encontrado' });
         }
